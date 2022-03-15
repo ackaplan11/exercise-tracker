@@ -25,6 +25,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
 
+//promsie based
 app.route('/api/users')
   .get((req, res) => {
     User.find()
@@ -49,6 +50,7 @@ app.route('/api/users')
       })
   });
 
+  //callback based
 app.post('/api/users/:_id/exercises', (req, res) => {
   let id = req.params._id
   let date = (req.body.date) ? new Date(req.body.date) : new Date()
@@ -71,7 +73,6 @@ app.post('/api/users/:_id/exercises', (req, res) => {
       "date": formatDate(exercise.date),
       "_id": id,
     }
-    console.log(returnObj)
     return res.send(returnObj)
   })
 })
@@ -85,15 +86,14 @@ app.get('/api/users/:_id/logs', (req, res) => {
     }
     const count = user.log.length
     const log = user.log
-    // for (const exercise of log) {
-    //   console.log(exercise)
-    //   //exercise.date = formatDate(exercise.date)
-    // }
+    for (const exercise of log) {
+      exercise.date = formatDate(exercise.date)
+    }
     const returnObj = {
       "username" : user.username,
       "count": count,
       "_id": id,
-      "log": user.log
+      "log": log
     }
     console.log(returnObj)
     return res.send(returnObj)
