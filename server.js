@@ -12,7 +12,6 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 //create models
 const schema = require('./schema.js')
 const User = mongoose.model('User', schema.userSchema)
-const Exercise = mongoose.model('User', schema.exerciseSchema)
 
 app.use(cors())
 app.use(express.static('public'))
@@ -29,22 +28,66 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 app.route('/api/users')
   .get(async (req, res) => {
     User.find()
+      .select('_id username')
       .then((users) => {
-        res.send(users)
+        return res.send(users)
       })
       .catch((err) => {
         console.log(err)
-        res.send(400, 'Bad Reqest')
+        return res.send(400, 'Bad Reqest')
       })
   })
   .post((req, res) => {
     const user = new User({ username: req.body.username });
     user.save()
       .then((user) => {
-        res.json(user)
+        return res.json(user)
       })
       .catch((err) => {
         console.log(err)
-        res.send(400, 'Bad Reqest')
+        return res.send(400, 'Bad Reqest')
       })
   });
+
+app.post('/api/users/:_id/exercises', (req, res) => {
+  let id = req.params._id
+  let date = (req.body.date) ? new Date(req.body.date) : new Date()
+  const exercise = {
+    description: req.body.description,
+    duration: parseInt(req.body.duration),
+    date: date,
+  }
+  const updates = { $push: { log: exercise }}
+  const options = { new : true }
+  User.findByIdAndUpdate(id, updates, options, (err, updatedUser) => {
+    if (err) {
+      console.log('update error:',err);
+      return res.json('update error:', err);
+    }
+    const returnObj = {
+      "username": updatedUser.username,
+      "description":exercise.description,
+      "duration": exercise.duration,
+      "date": formatDate(exercise.date),
+      "_id": id,
+    }
+    console.log(returnObj)
+    return res.send(returnObj)
+  })
+})
+
+
+
+
+
+
+
+function formatDate(date) {
+  let dateArr = date.toUTCString().replace(',', '').split(' ')
+  let dayOfWeek = dateArr[0]
+  let dayOfMonth = dateArr[1]
+  let month = dateArr[2]
+  let year = dateArr[3]
+  return `${dayOfWeek} ${month} ${dayOfMonth} ${year}`
+}
+
