@@ -26,7 +26,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 })
 
 app.route('/api/users')
-  .get(async (req, res) => {
+  .get((req, res) => {
     User.find()
       .select('_id username')
       .then((users) => {
@@ -76,7 +76,29 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   })
 })
 
-
+app.get('/api/users/:_id/logs', (req, res) => {
+  let id = req.params._id
+  User.findById(id, (err, user) => {
+    if (err) {
+      console.log('error:',err);
+      return res.json('Bad Request:', err);
+    }
+    const count = user.log.length
+    const log = user.log
+    // for (const exercise of log) {
+    //   console.log(exercise)
+    //   //exercise.date = formatDate(exercise.date)
+    // }
+    const returnObj = {
+      "username" : user.username,
+      "count": count,
+      "_id": id,
+      "log": user.log
+    }
+    console.log(returnObj)
+    return res.send(returnObj)
+  })
+})
 
 
 
