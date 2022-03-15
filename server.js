@@ -25,14 +25,25 @@ const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
 
-app.post('/api/users', (req, res) => {
-  const user = new User({ username: req.body.username });
-  user.save()
-    .then((user) => {
-      res.json(user)
-    })
-    .catch((err) => {
-      console.log(err)
-      res.send(400, 'Bad Reqest')
-    })
-});
+app.route('/api/users')
+  .get(async (req, res) => {
+    User.find()
+      .then((users) => {
+        res.send(users)
+      })
+      .catch((err) => {
+        console.log(err)
+        res.send(400, 'Bad Reqest')
+      })
+  })
+  .post((req, res) => {
+    const user = new User({ username: req.body.username });
+    user.save()
+      .then((user) => {
+        res.json(user)
+      })
+      .catch((err) => {
+        console.log(err)
+        res.send(400, 'Bad Reqest')
+      })
+  });
