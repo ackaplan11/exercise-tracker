@@ -1,3 +1,5 @@
+import { User } from './schema'
+
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -7,7 +9,6 @@ require('dotenv').config()
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected"))
   .catch((err) => console.log(err));
-
 
 app.use(cors())
 app.use(express.static('public'))
