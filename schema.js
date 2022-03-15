@@ -8,6 +8,19 @@ const userSchema = new Schema({
     }, 
 })
 
+const exerciseSchema = new Schema({
+    description: {
+        type: String,
+        required: true
+    }, 
+    duration: {
+        type: Number,
+        required: true
+    },
+    date: String
+})
+
 module.exports = {
-    userSchema
+    userSchema,
+    exerciseSchema
 }
