@@ -50,7 +50,7 @@ app.route('/api/users')
       })
   });
 
-  //callback based
+//callback based
 app.post('/api/users/:_id/exercises', (req, res) => {
   let id = req.params._id
   let date = (req.body.date) ? new Date(req.body.date) : new Date()
