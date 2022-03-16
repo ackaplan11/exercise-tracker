@@ -25,7 +25,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
 
-//promsie based
+//promsie based - decide on one
 app.route('/api/users')
   .get((req, res) => {
     User.find()
@@ -50,7 +50,7 @@ app.route('/api/users')
       })
   });
 
-//callback based
+//callback based - decide on one
 app.post('/api/users/:_id/exercises', (req, res) => {
   let id = req.params._id
   let date = (req.body.date) ? new Date(req.body.date) : new Date()
