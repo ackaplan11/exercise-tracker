@@ -79,7 +79,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
 app.get('/api/users/:_id/logs', (req, res) => {
   
-  let limit = (req.query.limit) ? req.query.limit : Number.MAX_SAFE_INTEGER
+  
   let id = req.params._id
   User.findById(id, (err, user) => {
     if (err) {
@@ -87,12 +87,10 @@ app.get('/api/users/:_id/logs', (req, res) => {
       return res.json('Bad Request:', err);
     }
     const count = user.log.length
-    const returnlog = []
-    for (let i = 0; i < Math.min(count, limit); i++) {
-      let exercise = user.log[i]
-      exercise.date = formatDate(exercise.date)
-      returnlog.push(exercise)
-    }
+    
+    retrieveLogs(user, req.query)
+    
+    
     const returnObj = {
       "username" : user.username,
       "count": count,
@@ -104,7 +102,17 @@ app.get('/api/users/:_id/logs', (req, res) => {
   })
 })
 
-
+function retrieveLogs(user, query) {
+  const returnlog = []
+  let limit = (query.limit) ? query.limit : Number.MAX_SAFE_INTEGER
+  //let from = (query.from) ? query.from : 
+  
+  for (let i = 0; i < Math.min(count, limit); i++) {
+    let exercise = user.log[i]
+    exercise.date = formatDate(exercise.date)
+    returnlog.push(exercise)
+  }
+}
 
 
 
