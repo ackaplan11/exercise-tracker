@@ -99,7 +99,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
       "_id": id,
       "log": returnlog
     }
-    if (limit != Number.MAX_SAFE_INTEGER) console.log(returnObj)
+    //if (limit != Number.MAX_SAFE_INTEGER) console.log(returnObj)
     return res.send(returnObj)
   })
 })
