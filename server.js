@@ -35,7 +35,7 @@ app.route('/api/users')
       })
       .catch((err) => {
         console.log(err)
-        return res.send(400, 'Bad Reqest')
+        return res.status(400).send('Bad Request')
       })
   })
   .post((req, res) => {
@@ -46,7 +46,7 @@ app.route('/api/users')
       })
       .catch((err) => {
         console.log(err)
-        return res.send(400, 'Bad Reqest')
+        return res.status(400).send('Bad Request')
       })
   });
 
