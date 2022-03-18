@@ -87,34 +87,35 @@ app.get('/api/users/:_id/logs', (req, res) => {
       return res.json('Bad Request:', err);
     }
     const count = user.log.length
-    
-    retrieveLogs(user, req.query)
-    
-    
+    const log = user.log
+    let returnLog = retrieveLogs(log, count, req.query)
+  
     const returnObj = {
       "username" : user.username,
       "count": count,
       "_id": id,
-      "log": returnlog
+      "log": returnLog
     }
     //if (limit != Number.MAX_SAFE_INTEGER) console.log(returnObj)
     return res.send(returnObj)
   })
 })
 
-function retrieveLogs(user, query) {
-  const returnlog = []
-  let limit = (query.limit) ? query.limit : Number.MAX_SAFE_INTEGER
-  //let from = (query.from) ? query.from : 
-  
-  for (let i = 0; i < Math.min(count, limit); i++) {
-    let exercise = user.log[i]
-    exercise.date = formatDate(exercise.date)
-    returnlog.push(exercise)
+//Find a better design pattern for this implementation
+function retrieveLogs(log, count, query) {
+  const returnLog = []
+  let limit = (query.limit) ? query.limit : count
+  let from = (query.from) ? new Date(query.from) : new Date('1970')
+  let to = (query.to) ? new Date(query.to) : new Date()
+  for (let i = 0; i < limit; i++) {
+    let exercise = log[i]
+    if (exercise.date >= from && exercise.date <= to) {
+      exercise.date = formatDate(exercise.date)
+      returnLog.push(exercise)
+    } 
   }
+  return returnLog
 }
-
-
 
 function formatDate(date) {
   let dateArr = date.toUTCString().replace(',', '').split(' ')
