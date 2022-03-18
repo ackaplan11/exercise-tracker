@@ -96,26 +96,26 @@ app.get('/api/users/:_id/logs', (req, res) => {
       "_id": id,
       "log": returnLog
     }
-    //if (limit != Number.MAX_SAFE_INTEGER) console.log(returnObj)
     return res.send(returnObj)
   })
 })
 
 //Find a better design pattern for this implementation
 function retrieveLogs(log, count, query) {
+  console.log(query)
   const returnLog = []
-  let limit = (query.limit) ? query.limit : count
+  let limit = (query.limit) ? parseInt(query.limit) : count
   let from = (query.from) ? new Date(query.from) : new Date('1970')
   let to = (query.to) ? new Date(query.to) : new Date()
-  for (let i = 0; i < limit; i++) {
+  for (let i = 0; i < count; i++) {
     let exercise = log[i]
     if (exercise.date >= from && exercise.date <= to) {
       exercise.date = formatDate(exercise.date)
       returnLog.push(exercise)
-    } 
+    }
   }
-  return returnLog
-}
+  return returnLog.slice(0, limit)
+} 
 
 function formatDate(date) {
   let dateArr = date.toUTCString().replace(',', '').split(' ')
